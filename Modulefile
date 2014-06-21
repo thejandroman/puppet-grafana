@@ -1,0 +1,10 @@
+name          'thejandroman-grafana'
+version       '0.1.0'
+source        'https://github.com/thejandroman/puppet-grafana.git'
+author        'thejandroman'
+license       'Apache 2.0'
+summary       'Installs and configures grafana'
+description   'Installs and configures grafana'
+project_page  'https://github.com/thejandroman/puppet-grafana'
+
+dependency 'puppetlabs/stdlib'
