@@ -11,7 +11,7 @@ function (Settings) {
 
     // datasources, you can add multiple
     datasources: {
-<%- ds = scope['grafana::_datasources'] -%>
+<%- ds = scope.lookupvar('grafana::_datasources') -%>
 <%- ds.sort.each do |source, source_params| -%>
       <%= source %>: {
 <%-   source_params.sort.each do |param, value| -%>
