@@ -19,12 +19,12 @@ class grafana (
   $config_timezoneOffset          = $::grafana::params::config_timezoneOffset,
   $config_unsaved_changes_warning = $::grafana::params::config_unsaved_changes_warning,
   $ensure                         = $::grafana::params::ensure,
-  $graf_folder_owner              = $::kibana3::params::graf_folder_owner,
-  $graf_install_folder            = $::kibana3::params::graf_install_folder,
-  $graf_release                   = $::kibana3::params::graf_release,
-  $manage_git                     = $::kibana3::params::manage_git,
-  $manage_ws                      = $::kibana3::params::manage_ws,
-  $ws_port                        = $::kibana3::params::ws_port,
+  $graf_folder_owner              = $::grafana::params::graf_folder_owner,
+  $graf_install_folder            = $::grafana::params::graf_install_folder,
+  $graf_release                   = $::grafana::params::graf_release,
+  $manage_git                     = $::grafana::params::manage_git,
+  $manage_ws                      = $::grafana::params::manage_ws,
+  $ws_port                        = $::grafana::params::ws_port,
 ) inherits grafana::params {
 
   validate_array($config_panels)
@@ -39,7 +39,6 @@ class grafana (
   validate_string($config_playlist_timespan)
   validate_string($config_template)
   validate_string($config_timezoneOffset)
-  validate_string($graf_folder_owner)
   validate_string($graf_install_folder)
   validate_string($graf_release)
   validate_string($ws_port)
@@ -59,6 +58,7 @@ class grafana (
   }
 
   if $::grafana::graf_folder_owner {
+    validate_string($graf_folder_owner)
     $_ws_user = $::grafana::graf_folder_owner
   } elsif $::grafana::manage_ws {
     $_ws_user = $::apache::params::user

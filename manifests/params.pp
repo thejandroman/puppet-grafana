@@ -4,7 +4,6 @@
 # It sets variables according to platform
 #
 class grafana::params {
-  $config_template                = 'grafana/config.js.erb'
   $config_datasources             = undef
   $config_default_route           = '/dashboard/file/default.json'
   $config_ds_url                  = ''
@@ -12,6 +11,7 @@ class grafana::params {
   $config_grafana_index           = 'grafana-dash'
   $config_panels                  = []
   $config_playlist_timespan       = '1m'
+  $config_template                = 'grafana/config.js.erb'
   $config_timezoneOffset          = 'null'
   $config_unsaved_changes_warning = true
 
