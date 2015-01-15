@@ -20,17 +20,16 @@ Rake::Task[:lint].clear
 PuppetLint::RakeTask.new :lint do |config|
   config.disable_checks = [
     '80chars',
+    'autoloader_layout',
     'class_parameter_defaults',
-    'class_inherits_from_params_class'
+    'class_inherits_from_params_class',
   ]
 
   config.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
   config.fail_on_warnings = true
-  #config.relative = true
 
   config.ignore_paths = exclude_paths
 end
-PuppetLint.configuration.send('relative')
 
 PuppetSyntax.exclude_paths = exclude_paths
 
