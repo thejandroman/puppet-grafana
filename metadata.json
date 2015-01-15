@@ -1,0 +1,28 @@
+{
+    "name": "thejandroman-grafana",
+    "version": "0.1.0",
+    "author": "thejandroman",
+    "summary": "Installs and configures grafana",
+    "license": "Apache-2.0",
+    "source": "https://github.com/thejandroman/puppet-grafana",
+    "project_page": "https://github.com/thejandroman/puppet-grafana",
+    "issues_url": "https://github.com/thejandroman/puppet-grafana/issues",
+    "dependencies": [
+        {
+            "name": "puppetlabs-stdlib",
+            "version_requirement": ">= 4.0.0"
+        },
+        {
+            "name": "puppetlabs-vcsrepo",
+            "version_requirement": ">= 1.0.0"
+        },
+        {
+            "name": "puppetlabs-apache",
+            "version_requirement": ">= 1.0.0"
+        },
+        {
+            "name": "puppetlabs-git",
+            "version_requirement": ">= 0.0.3"
+        }
+    ]
+}
