@@ -1,65 +1,73 @@
-///// @scratch /configuration/config.js/1
- // == Configuration
- // config.js is where you will find the core Grafana configuration. This file contains parameter that
- // must be set before Grafana is run for the first time.
- ///
-define(['settings'],
-function (Settings) {
-  "use strict";
+// == Configuration
+// config.js is where you will find the core Grafana configuration. This file contains parameter that
+// must be set before Grafana is run for the first time.
 
-  return new Settings({
+define(['settings'], function (Settings) {
+    "use strict";
 
-    // datasources, you can add multiple
-    datasources: {
-<%- ds = scope.lookupvar('grafana::_datasources') -%>
-<%- ds.sort.each do |source, source_params| -%>
-      <%= source %>: {
-<%-   source_params.sort.each do |param, value| -%>
-        <%= param %>: <%= value %>,
+    return new Settings({
+
+        /* Data sources
+         * ========================================================
+         * Datasources are used to fetch metrics, annotations, and serve as dashboard storage
+         *  - You can have multiple of the same type.
+         *  - grafanaDB: true    marks it for use for dashboard storage
+         *  - default: true      marks the datasource as the default metric source (if you have multiple)
+         *  - basic authentication: use url syntax http://username:password@domain:port
+         */
+<%- if defined? @config_datasources -%>
+        datasources: {
+<%-   @config_datasources.sort.each do |source, source_params| -%>
+            <%= source %>: {
+<%-     source_params.sort.each do |param, value| -%>
+<%-       if !!value == value -%>
+                <%= param %>: <%= value %>,
+<%-       else -%>
+                <%= param %>: '<%= value %>',
+<%-       end -%>
+<%-     end -%>
+            },
 <%-   end -%>
+        },
 <%- end -%>
-      },
-    },
 
-    // elasticsearch url
-    // used for storing and loading dashboards, optional
-    // For Basic authentication use: http://username:password@domain.com:9200
-    elasticsearch: "<%= @config_elasticsearch %>",
+        // specify the limit for dashboard search results
+        search: {
+            max_results: <%= @config_search_max_results %>
+        },
 
-    // default start dashboard
-    default_route: '<%= @config_default_route %>',
+        // default home dashboard
+        default_route: '<%= @config_default_route %>',
 
-    // timezoneOFfset:
-    // If you experiance problems with zoom, it is probably caused by timezone diff between
-    // your browser and the graphite-web application. timezoneOffset setting can be used to have Grafana
-    // translate absolute time ranges to the graphite-web timezone.
-    // Example:
-    //   If TIME_ZONE in graphite-web config file local_settings.py is set to America/New_York, then set
-    //   timezoneOffset to "-0500" (for UTC - 5 hours)
-    // Example:
-    //   If TIME_ZONE is set to UTC, set this to "0000"
-    //
-    timezoneOffset: <%= @config_timezoneOffset %>,
+        // set to false to disable unsaved changes warning
+        unsaved_changes_warning: <%= @config_unsaved_changes_warning %>,
 
-    // Elasticsearch index for storing dashboards
-    grafana_index: "<%= @config_grafana_index %>",
+        // set the default timespan for the playlist feature
+        // Example: "1m", "1h"
+        playlist_timespan: "<%= @config_playlist_timespan %>",
 
-    // set to false to disable unsaved changes warning
-    unsaved_changes_warning: <%= @config_unsaved_changes_warnings %>,
+        // If you want to specify password before saving, please specify it below
+        // The purpose of this password is not security, but to stop some users from accidentally changing dashboards
+        admin: {
+            password: '<%= @config_admin_password %>'
+        },
 
-    // set the default timespan for the playlist feature
-    // Example: "1m", "1h"
-    playlist_timespan: "<%= @config_playlist_timespan %>",
+        // Change window title prefix from 'Grafana - <dashboard title>'
+        window_title_prefix: '<%= @config_window_title_prefix %>',
 
-
-    // Add your own custom pannels
-    plugins: {
-      panels: [
-<%- @config_panels.each do |cpn| -%>
-        '<%= cpn %>',
+        // Add your own custom pannels
+        plugins: {
+            panels: [
+<%- @config_plugins_panels.each do |cpp| -%>
+                '<%= cpp %>',
 <%- end -%>
-      ]
-    }
+            ],
+            dependencies: [
+<%- @config_plugins_dependencies.each do |cpd| -%>
+                '<%= cpd %>',
+<%- end -%>
+            ],
+        }
 
   });
 });
