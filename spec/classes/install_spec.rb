@@ -25,14 +25,14 @@ describe 'grafana::install' do
                          'ensure'   => 'present',
                          'provider' => 'git',
                          'source'   => 'https://github.com/grafana/grafana.git',
-                         'revision' => 'v1.9.1',
+                         'revision' => 'v1.9.1'
                        ) \
-                       .that_notifies('Class[apache::service]')}
+                       .that_notifies('Class[apache::service]') }
 
           it { should contain_apache__vhost('grafana') \
                        .with(
                          'port'    => '80',
-                         'docroot' => '/opt/grafana/src',
+                         'docroot' => '/opt/grafana/src'
                        ) }
         end
 
@@ -74,7 +74,7 @@ describe 'grafana::install' do
                        .with(
                          'source'   => 'git@github.com:grafana/grafana.git',
                          'revision' => 'foo',
-                         'owner'    => 'foo',
+                         'owner'    => 'foo'
                        ) }
 
           it { should contain_apache__vhost('foo') \
@@ -82,7 +82,7 @@ describe 'grafana::install' do
                          'port'          => '443',
                          'default_vhost' => true,
                          'docroot'       => '/tmp/grafana/src',
-                         'docroot_owner' => 'foo',
+                         'docroot_owner' => 'foo'
                        ) }
         end
       end
