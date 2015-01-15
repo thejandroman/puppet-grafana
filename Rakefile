@@ -30,6 +30,7 @@ PuppetLint::RakeTask.new :lint do |config|
 
   config.ignore_paths = exclude_paths
 end
+PuppetLint.configuration.send('relative')
 
 PuppetSyntax.exclude_paths = exclude_paths
 
