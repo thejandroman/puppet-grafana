@@ -9,7 +9,7 @@
 #
 class grafana (
   $config_admin_password          = $::grafana::params::config_admin_password,
-  $config_datasources             = $::grafana::params::config_datasources,
+  $config_datasources,
   $config_default_route           = $::grafana::params::config_default_route,
   $config_playlist_timespan       = $::grafana::params::config_playlist_timespan,
   $config_plugins_dependencies    = $::grafana::params::config_plugins_dependencies,
@@ -24,6 +24,7 @@ class grafana (
   $graf_install_folder            = $::grafana::params::graf_install_folder,
   $graf_release                   = $::grafana::params::graf_release,
   $manage_git                     = $::grafana::params::manage_git,
+  $manage_git_repository          = $::grafana::params::manage_git_repository,
   $manage_ws                      = $::grafana::params::manage_ws,
   $ws_default_vhost               = $::grafana::params::ws_default_vhost,
   $ws_port                        = $::grafana::params::ws_port,
@@ -36,12 +37,11 @@ class grafana (
   validate_bool($config_unsaved_changes_warning,
   $ensure,
   $manage_git,
+  $manage_git_repository,
   $manage_ws,
   $ws_default_vhost)
 
-  if ($config_datasources) {
-    validate_hash($config_datasources)
-  }
+  validate_hash($config_datasources)
 
   validate_string($config_admin_password,
   $config_default_route,

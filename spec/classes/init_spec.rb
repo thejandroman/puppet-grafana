@@ -10,7 +10,9 @@ describe 'grafana' do
                        :operatingsystemrelease => '12.04',
                      }}
         describe "init class without params" do
-          let(:params) {{ }}
+          let(:params) {{
+                          :config_datasources => {}
+                        }}
 
           it { should compile }
 

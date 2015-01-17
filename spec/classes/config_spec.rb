@@ -11,7 +11,7 @@ describe 'grafana::config' do
                      }}
         describe "with default params" do
           let(:pre_condition) {
-            'include grafana'
+            'class {\'grafana\': config_datasources => {} }'
           }
 
           it { should compile }

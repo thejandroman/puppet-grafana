@@ -21,12 +21,14 @@ class grafana::install {
     $_ws_user = 'root'
   }
 
-  vcsrepo { $::grafana::graf_install_folder:
-    ensure   => present,
-    provider => git,
-    source   => $::grafana::graf_clone_url,
-    revision => $::grafana::graf_release,
-    owner    => $_ws_user,
+  if $::grafana::manage_git_repository {
+    vcsrepo { $::grafana::graf_install_folder:
+      ensure   => present,
+      provider => git,
+      source   => $::grafana::graf_clone_url,
+      revision => $::grafana::graf_release,
+      owner    => $_ws_user,
+    }
   }
 
   if $::grafana::manage_ws {
@@ -37,6 +39,8 @@ class grafana::install {
       docroot_owner => $_ws_user,
     }
 
-    Vcsrepo[$::grafana::graf_install_folder] ~> Class['::apache::service']
+    if $::grafana::manage_git_repository and $::grafana::manage_ws {
+      Vcsrepo[$::grafana::graf_install_folder] ~> Class['::apache::service']
+    }
   }
 }

@@ -5,7 +5,6 @@
 #
 class grafana::params {
   $config_admin_password          = ''
-  $config_datasources             = undef
   $config_default_route           = '/dashboard/file/default.json'
   $config_playlist_timespan       = '1m'
   $config_plugins_dependencies    = []
@@ -26,6 +25,7 @@ class grafana::params {
   $graf_release        = 'v1.9.1'
 
   $manage_git = true
+  $manage_git_repository = true
 
   $manage_ws        = true
   $ws_default_vhost = false
