@@ -15,21 +15,19 @@ define(['settings'], function (Settings) {
          *  - default: true      marks the datasource as the default metric source (if you have multiple)
          *  - basic authentication: use url syntax http://username:password@domain:port
          */
-<%- if defined? @config_datasources -%>
         datasources: {
-<%-   @config_datasources.sort.each do |source, source_params| -%>
+<%- @config_datasources.sort.each do |source, source_params| -%>
             <%= source %>: {
-<%-     source_params.sort.each do |param, value| -%>
-<%-       if !!value == value -%>
+<%-   source_params.sort.each do |param, value| -%>
+<%-     if !!value == value -%>
                 <%= param %>: <%= value %>,
-<%-       else -%>
+<%-     else -%>
                 <%= param %>: '<%= value %>',
-<%-       end -%>
 <%-     end -%>
-            },
 <%-   end -%>
-        },
+            },
 <%- end -%>
+        },
 
         // specify the limit for dashboard search results
         search: {
