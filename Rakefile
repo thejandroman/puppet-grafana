@@ -1,3 +1,5 @@
+require 'puppet/version'
+require 'puppet/vendor/semantic/lib/semantic' unless Puppet.version.to_f <3.6
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
@@ -5,7 +7,7 @@ require 'puppet-syntax/tasks/puppet-syntax'
 # These two gems aren't always present, for instance
 # on Travis with --without development
 begin
-#  require 'puppet_blacksmith/rake_tasks'
+  require 'puppet_blacksmith/rake_tasks'
 rescue LoadError
 end
 
