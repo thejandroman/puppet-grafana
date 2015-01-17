@@ -1,4 +1,4 @@
-# == Class grafana::params
+# == Private Class grafana::params
 #
 # This class is meant to be called from grafana
 # It sets variables according to platform
