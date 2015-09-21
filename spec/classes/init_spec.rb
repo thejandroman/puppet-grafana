@@ -3,11 +3,20 @@ require 'spec_helper'
 describe 'grafana' do
   context 'supported operating systems' do
     ['Debian', 'RedHat'].each do |osfamily|
+      case osfamily
+      when 'RedHat'
+        operatingsystem = 'CentOS'
+        operatingsystemrelease = '6.5'
+      when 'Debian'
+        operatingsystem = 'Ubuntu'
+        operatingsystemrelease = '12.04'
+      end
       describe "#{osfamily}" do
         let(:facts) {{
                        :concat_basedir         => '/dne',
                        :osfamily               => osfamily,
-                       :operatingsystemrelease => '12.04',
+                       :operatingsystem        => operatingsystem,
+                       :operatingsystemrelease => operatingsystemrelease,
                      }}
         describe "init class without params" do
           let(:params) {{ }}
