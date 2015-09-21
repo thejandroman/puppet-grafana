@@ -19,7 +19,9 @@ describe 'grafana' do
                        :operatingsystemrelease => operatingsystemrelease,
                      }}
         describe "init class without params" do
-          let(:params) {{ }}
+          let(:params) {{
+                          :config_datasources => {}
+                        }}
 
           it { should compile }
 

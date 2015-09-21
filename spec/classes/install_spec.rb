@@ -11,7 +11,7 @@ describe 'grafana::install' do
                      }}
         describe "with default params" do
           let(:pre_condition) {
-            'include grafana'
+            'class {\'grafana\': config_datasources => {} }'
           }
 
           it { should compile }
@@ -39,8 +39,9 @@ describe 'grafana::install' do
         describe "without git or apache" do
           let(:pre_condition) {
             'class {\'grafana\':
-               manage_git => false,
-               manage_ws  => false,
+               config_datasources => {},
+               manage_git         => false,
+               manage_ws          => false,
              }'
           }
 
@@ -55,9 +56,23 @@ describe 'grafana::install' do
           it { should_not contain_apache__vhost('grafana') }
         end
 
+        describe "without grafana repo" do
+          let(:pre_condition) {
+            'class {\'grafana\':
+               config_datasources => {},
+               manage_git_repository => false,
+             }'
+          }
+
+          it { should compile }
+
+          it { should_not contain_vcsrepo('/opt/grafana') }
+        end
+
         describe "with custom params" do
           let(:pre_condition) {
             'class {\'grafana\':
+               config_datasources  => {},
                graf_folder_owner   => \'foo\',
                graf_install_folder => \'/tmp/grafana\',
                graf_clone_url      => \'git@github.com:grafana/grafana.git\',

@@ -1,62 +1,172 @@
-[![Build Status](https://travis-ci.org/thejandroman/puppet-grafana.svg?branch=master)](https://travis-ci.org/thejandroman/puppet-grafana)
+#grafana [![Build Status](https://travis-ci.org/thejandroman/puppet-grafana.svg?branch=master)](https://travis-ci.org/thejandroman/puppet-grafana)
 
 ####Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with grafana](#setup)
-    * [What grafana affects](#what-grafana-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with grafana](#beginning-with-grafana)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+2. [Module Description](#module-description)
+3. [Setup](#setup)
+    * [Examples](#examples)
+4. [Usage](#usage)
+    * [Classes](#classes)
+      * [grafana](#class-grafana)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
+7. [License](#license)
 
 ##Overview
-
-A one-maybe-two sentence summary of what the module does/what problem it solves. This is your 30 second elevator pitch for your module. Consider including OS/Puppet version it works with.
+The grafana puppet module allows one to setup and configure the [grafana](http://grafana.org) dashboard.
 
 ##Module Description
+This module should cover all configuration options for grafana v1.9.x.
 
-If applicable, this section should have a brief description of the technology the module integrates with and what that integration enables. This section should answer the questions: "What does this module *do*?" and "Why would I use it?"
+This module checks out the [grafana source](https://github.com/grafana/grafana) directly from github and requires git to be installed. By default this module will install git via the [puppetlabs/git](https://github.com/puppetlabs/puppetlabs-git) module. This behavior can be disabled.
 
-If your module has a range of functionality (installation, configuration, management, etc.) this is the time to mention it.
+Grafana requires a webserver to serve its content. By default this module will install apache via the [puppetlabs/apache](https://github.com/puppetlabs/puppetlabs-apache) module. This behavior can be disabled.
 
 ##Setup
+The grafana module requires that `config_datasources` be specified. For a description of the different granafa configuration options see [grafana's documentation](http://grafana.org/docs#configuration). To disable managing of git or apache see options below.
 
-###What grafana affects
+###Examples
+To install grafana accepting all default options:
 
-* A list of files, packages, services, or operations that the module will alter, impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+```puppet
+  class { 'grafana':
+    config_datasources => {
+      graphite      => {
+        type => 'graphite',
+        url  => 'http://my.graphite.server.com:8080',
+      },
+      elasticsearch => {
+        type      => 'elasticsearch',
+        url       => 'http://my.elastic.server.com:9200',
+        index     => 'grafana-dash',
+        grafanaDB => true,
+      }
+    }
+  }
+```
 
-###Setup Requirements **OPTIONAL**
+To disable webserver and git management:
 
-If your module requires anything extra before setting up (pluginsync enabled, etc.), mention it here.
-
-###Beginning with grafana
-
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you may wish to include an additional section here: Upgrading (For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+```puppet
+class { 'grafana':
+    config_datasources => { ... },
+    manage_ws          => false,
+    manage_git         => false,
+  }
+```
 
 ##Usage
+###Classes
+####Class: `grafana`
+#####`config_admin_password`
+**Data Type:** _string_
+**Default:** _''_
+The purpose of this password is not security, but to stop some users from accidentally changing dashboards.
 
-Put the classes, types, and resources for customizing, configuring, and doing the fancy stuff with your module here.
+#####`config_datasources`
+**Data Type:** _hash_
+**Default:** _undef_
+The datasources property defines your metric, annotation and dashboard storage backends. See [grafana documentation](http://grafana.org/docs#configuration).
 
-##Reference
+#####`config_default_route`
+**Data Type:** _string_
+**Default:** _/dashboard/file/default.json_
+The default start dashboard.
 
-Here, list the classes, types, providers, facts, etc contained in your module. This section should include all of the under-the-hood workings of your module so people know what the module is touching on their system but don't need to mess with things. (We are working on automating this section!)
+#####`config_playlist_timespan`
+**Data Type:** _string_
+**Default:** _1m_
+Set the default timespan for the playlist feature. Example: "1m", "1h"
+
+#####`config_plugins_dependencies`
+**Data Type:** _array_
+**Default:** _[]_
+requirejs modules in plugins folder that should be loaded; for example custom datasources.
+
+#####`config_plugins_panels`
+**Data Type:** _array_
+**Default:** _[]_
+List of plugin panels.
+
+#####`config_search_max_results`
+**Data Type:** _string_
+**Default:** _100_
+Specify the limit for dashboard search results.
+
+#####`config_template`
+**Data Type:** _string_
+**Default:** _grafana/config.js.erb_
+The erb template to build config.js.
+
+#####`config_unsaved_changes_warning`
+**Data Type:** _bool_
+**Default:** _true_
+Set to false to disable unsaved changes warning.
+
+#####`config_window_title_prefix`
+**Data Type:** _string_
+**Default:** _Grafana - _
+Change window title prefix from 'Grafana - <dashboard title>'.
+
+##### `graf_clone_url`
+**Data Type:** _string_
+**Default:** _https://github.com/grafana/grafana.git_
+URL for the grafana git repo.
+
+#####`graf_folder_owner`
+**Data Type:** _string_
+**Default:** _undef_
+The owner of the grafana install located at `graf_install_folder`. If `graf_folder_owner` remains 'undef' it defaults to one of two cases:
+ * if `manage_ws => false` then `graf_folder_owner => 'root'`
+ * if `manage_ws => true` then `graf_folder_owner => $::apache::params::user`
+
+#####`graf_install_folder`
+**Data Type:** _string_
+**Default:** _/opt/grafana_
+The folder to install grafana into.
+
+#####`graf_release`
+**Data Type:** _string_
+**Default:** _v1.9.1_
+A tag or branch from the [grafana](https://github.com/grafana/grafana) repo.
+
+#####`manage_git`
+**Data Type:** _bool_
+**Default:** _true_
+Should the module manage git.
+
+#####`manage_git_repository`
+**Data Type:** _bool_
+**Default:** _true_
+Should the module manage grafana git repository.
+
+#####`manage_ws`
+**Data Type:** _bool_
+**Default:** _true_
+Should the module manage the webserver.
+
+#####`ws_default_vhost`
+**Data Type:** _bool_
+**Default:** _false_
+Attempt to make the grafana vhost the default. Only taken into account if `manage_ws => true`.
+
+#####`ws_port`
+**Data Type:** _string_
+**Default:** _80_
+Change the default port for the webserver to a custom value. Only taken into account if `manage_ws => true`.
+
+#####`ws_servername`
+**Data Type:** _string_
+**Default:** _grafana_
+Change the default servername for the apache vhost. Only taken into account if `manage_ws => true`.
 
 ##Limitations
+ * Tested and built on Ubuntu 12.04.
+ * Tested with grafana v1.9.1.
 
-This is where you list OS compatibility, version compatibility, etc.
+##Contributing
+Pull requests are welcome. Please document and include rspec tests.
 
-##Development
-
-Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
-
-##Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You may also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+##License
+See [LICENSE](https://github.com/thejandroman/grafana/blob/master/LICENSE) file.
